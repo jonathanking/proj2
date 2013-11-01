@@ -6,18 +6,18 @@ import static jump61.Color.*;
 /** A Jump61 board state.
  *  @author Jonathan King
  */
+
 class MutableBoard extends Board {
-   String[][] _board;
-    
+
     /** An N x N board in initial configuration. */
     MutableBoard(int N) {
-        _board = new String[N][N];
+        // FIXME
     }
 
     /** A board whose initial contents are copied from BOARD0. Clears the
      *  undo history. */
     MutableBoard(Board board0) {
-        _board = board0.get_board();
+        // FIXME
     }
 
     @Override
