@@ -84,6 +84,7 @@ class Game {
     /** Add a spot to square #N, if legal to do so. */
     void makeMove(int n) {
         // FIXME
+        // GIT TEST
     }
 
     /** Return a random integer in the range [0 .. N), uniformly
