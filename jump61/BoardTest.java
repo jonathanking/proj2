@@ -22,6 +22,8 @@ public class BoardTest {
         assertEquals("bad length", 5, C.size());
         Board D = new MutableBoard(C);
         assertEquals("bad length", 5, C.size());
+        Board E = new MutableBoard(D);
+        assertEquals("bad length", 5, E.size());
     }
 
     @Test

@@ -34,9 +34,8 @@ class MutableBoard extends Board {
      * history.
      */
     MutableBoard(Board board0) {
-        
+//        MutableBoard(board0.size());
         copy(board0);
-
     }
 
     @Override
@@ -167,7 +166,8 @@ class MutableBoard extends Board {
 
     /**
      * Do all jumping on this board, assuming that initially, S is the only
-     * square that might be over-full.
+     * square that might be over-full. When adding spots, there is +1 added
+     * to each addSpot() call due to my Square[][] representation of the board.
      */
     private void jump(int r, int c) {
 

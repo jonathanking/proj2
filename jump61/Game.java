@@ -49,7 +49,9 @@ class Game {
         _playing = true;
         _out.println("Welcome to " + Defaults.VERSION);
         _prompter.print(">");
-
+        while(_inp.hasNext()) {
+            
+        }
         // while (true) {
 //            _prompter.print(">");
 //            
