@@ -12,6 +12,8 @@ public class BoardTest {
 
     private static final String NL = System.getProperty("line.separator");
 
+    
+    
     @Test
     public void testSize() {
         Board B = new MutableBoard(5);
@@ -20,6 +22,8 @@ public class BoardTest {
         assertEquals("bad length", 5, C.size());
         Board D = new MutableBoard(C);
         assertEquals("bad length", 5, C.size());
+        Board E = new MutableBoard(D);
+        assertEquals("bad length", 5, E.size());
     }
 
     @Test
@@ -47,15 +51,34 @@ public class BoardTest {
         checkBoard("#4", B, 1, 1, 2, RED, 2, 1, 2, BLUE);
         B.addSpot(RED, 1, 1);
         checkBoard("#5", B, 1, 1, 1, RED, 2, 1, 3, RED, 1, 2, 1, RED);
-        B.undo();
-        checkBoard("#4U", B, 1, 1, 2, RED, 2, 1, 2, BLUE);
-        B.undo();
-        checkBoard("#3U", B, 1, 1, 2, RED, 2, 1, 1, BLUE);
-        B.undo();
-        checkBoard("#2U", B, 1, 1, 1, RED, 2, 1, 1, BLUE);
-        B.undo();
-        checkBoard("#1U", B, 1, 1, 1, RED);
+
+
+        
+        
+//        B.undo();
+//        checkBoard("#4U", B, 1, 1, 2, RED, 2, 1, 2, BLUE);
+//        B.undo();
+//        checkBoard("#3U", B, 1, 1, 2, RED, 2, 1, 1, BLUE);
+//        B.undo();
+//        checkBoard("#2U", B, 1, 1, 1, RED, 2, 1, 1, BLUE);
+//        B.undo();
+//        checkBoard("#1U", B, 1, 1, 1, RED);
     }
+    
+    @Test
+    public void testFlip1() {
+        Board B = new MutableBoard(2);
+        B.addSpot(RED, 1, 1);
+        B.addSpot(BLUE, 1, 2);
+        B.addSpot(RED, 2, 1);
+        B.set(2, 2, 2, BLUE);
+        B.addSpot(RED, 1, 1);
+        checkBoard("#1", B, 1, 1, 2, RED, 1, 2, 1, BLUE, 2, 1, 1, RED, 2, 2, 2, BLUE);
+        B.addSpot(RED, 1, 1);
+        checkBoard("#2", B, 1, 1, 1, RED, 1, 2, 2, RED, 2, 1, 2, RED, 2, 2, 2, BLUE);
+
+    }
+    
 
     private void checkBoard(String msg, Board B, Object... contents) {
         for (int k = 0; k < contents.length; k += 4) {
@@ -68,7 +91,7 @@ public class BoardTest {
         }
         int c;
         c = 0;
-        for (int i = B.size() * B.size() - 1; i >= 0; i -= 1) {
+        for (int i = B.size() * B.size(); i > 0; i -= 1) {
             assertTrue("bad white square #" + i,
                        (B.color(i) == WHITE) == (B.spots(i) == 0));
             if (B.color(i) != WHITE) {

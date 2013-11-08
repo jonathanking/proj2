@@ -1,5 +1,6 @@
 package jump61;
 
+import java.util.ArrayList;
 import java.util.Formatter;
 
 import static jump61.Color.*;
@@ -13,17 +14,27 @@ import static jump61.Color.*;
  */
 abstract class Board {
 
-    /** Holds the information of the board. */
-    private String[][] _board;
+//    /** Holds the information of the board. */
+//    private Square[][] _board;
 
     /** Returns the String[][] representation of the board. */
-    public String[][] get_board() {
-        return _board;
-    }
+    abstract Square[][] getBoard();
 
     /** Sets the representation of the current board. */
-    public void set_board(String[][] _board) {
-        this._board = _board;
+    abstract void setBoard(Square[][] _board);
+    
+    /**
+     * Returns a 2D array of squares (size N x N) all initialized as new
+     * Squares.
+     */
+    Square[][] cleanBoard(int N) {
+        Square[][] newBoard = new Square[N][N];
+        for (int r = 0; r < N; r++) {
+            for (int c = 0; c < N; c++) {
+                newBoard[r][c] = new Square();
+            }
+        }
+        return newBoard;
     }
 
     /**
@@ -65,12 +76,19 @@ abstract class Board {
     /** Returns the Color of the player who would be next to move.  If the
      *  game is won, this will return the loser (assuming legal position). */
     Color whoseMove() {
-        return RED;
-        // FIXME
+        if (numMoves()%2!=0) {
+            return RED;
+        } else if (numMoves()%2==0){
+            return BLUE;
+        }
+        return null;
+
     }
 
     /** Return true iff row R and column C denotes a valid square. */
     final boolean exists(int r, int c) {
+        r += 1;
+        c += 1;
         return 1 <= r && r <= size() && 1 <= c && c <= size();
     }
 
@@ -82,14 +100,18 @@ abstract class Board {
 
     /** Return the row number for square #N. */
     final int row(int n) {
-        return 1;
-        // FIXME
+//        double r = Math.ceil((double)8/3);
+        return (int) Math.ceil( (double) n/this.size());
     }
 
     /** Return the column number for square #N. */
     final int col(int n) {
-        return 1;
-        // FIXME
+        int c = n % this.size();
+        if (c == 0) {
+            return this.size();
+        } else {
+            return c;
+        }
     }
 
     /** Return the square number of row R, column C. */
@@ -168,9 +190,23 @@ abstract class Board {
     /** Returns my dumped representation. */
     @Override
     public String toString() {
-        Formatter out = new Formatter();
+//        Formatter out = new Formatter();
+//        System.out.print("===\n");
+        //take into acount size of board
+        String out = "";
+        out+="===\n";
+        for (Square[] row : this.getBoard()) {
+            out+="    ";
+            for (Square s: row) {
+                out += s + " ";
+            }
+            out = out.substring(0, out.length() -1) + "\n";
+        }
+        out+="===\n";
+//        System.out.printf("===\n%4s %s, args");
         // FIXME
-        return out.toString();
+//        return out.toString();
+        return out;
     }
 
     /** Returns an external rendition of me, suitable for
@@ -184,15 +220,37 @@ abstract class Board {
 
     /** Returns the number of neighbors of the square at row R, column C. */
     int neighbors(int r, int c) {
-        return 2;
+        int total = 4;
+        if (r == 0 || r == this.size() - 1) {
+            total -= 1;
+        }
+        if (c == 0 || c == this.size() - 1) {
+            total -= 1;
+        }
+        return total;
         // FIXME
     }
 
     /** Returns the number of neighbors of square #N. */
     int neighbors(int n) {
-        return 2;
-        // FIXME
+        return neighbors(row(n), col(n));
     }
+
+//    /**
+//     * Returns a 2D int array that represents the coordinates of each neighbor
+//     * of the square [R, C].
+//     */
+//    ArrayList<int[]> neighborList(int r, int c) {
+//        ArrayList index = new ArrayList<int[]>();
+//        if (r == 0) {
+//
+//        } else if (r == this.size() - 1) {
+//
+//        }
+//        if (c == 0 || c == this.size() - 1) {
+//        }
+//        return null;
+//    }
 
     /** Indicate fatal error: OP is unsupported operation. */
     private void unsupported(String op) {
