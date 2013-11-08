@@ -80,7 +80,7 @@ class Game {
 
     /** Add a spot to R C, if legal to do so. */
     void makeMove(int r, int c) {
-        // FIXME
+        
     }
 
     /** Add a spot to square #N, if legal to do so. */

@@ -27,6 +27,13 @@ public class BoardTest {
     }
 
     @Test
+    public void compileTest() {
+        Board B = new MutableBoard(5);
+        assertEquals("bad length", 5, B.size());
+
+    }
+    
+    @Test
     public void testSet() {
         Board B = new MutableBoard(5);
         B.set(2, 2, 1, RED);

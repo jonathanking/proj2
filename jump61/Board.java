@@ -124,15 +124,24 @@ abstract class Board {
     /** Returns true iff it would currently be legal for PLAYER to add a spot
         to square at row R, column C. */
     boolean isLegal(Color player, int r, int c) {
-        return true;
+        Color square = getBoard()[r-1][c-1].getColor();
+        if (this.whoseMove() == Color.BLUE &&
+            (square == Color.BLUE || square == Color.WHITE)) {
+            return true;
+        } else if (this.whoseMove() == Color.RED &&
+            (square == Color.RED || square == Color.WHITE )) {
+            return true;
+        } else {
+            return false;
+        }
+        
         // FIXME
     }
 
     /** Returns true iff it would currently be legal for PLAYER to add a spot
      *  to square #N. */
     boolean isLegal(Color player, int n) {
-        return true;
-        // FIXME
+        return isLegal(player, row(n), col(n));
     }
 
     /** Returns true iff PLAYER is allowed to move at this point. */
