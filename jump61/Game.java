@@ -28,7 +28,7 @@ class Game {
         _readonlyBoard = new ConstantBoard(_board);
         _prompter = new PrintWriter(prompts, true);
         _inp = new Scanner(input);
-        _inp.useDelimiter("(?m)$|^|\\p{Blank}");
+        _inp.useDelimiter("(?m)$|^|\\p{Blank}+");
         _out = new PrintWriter(output, true);
         _err = new PrintWriter(errorOutput, true);
         // FIXME?
@@ -84,7 +84,6 @@ class Game {
     /** Add a spot to square #N, if legal to do so. */
     void makeMove(int n) {
         // FIXME
-        // GIT TEST
     }
 
     /** Return a random integer in the range [0 .. N), uniformly
@@ -102,7 +101,9 @@ class Game {
     /** Check whether we are playing and there is an unannounced winner.
      *  If so, announce and stop play. */
     private void checkForWin() {
-        // FIXME
+        if(_playing) {
+            
+        }
     }
 
     /** Send announcement of winner to my user output. */
@@ -151,7 +152,7 @@ class Game {
      *  0, clears the square, ignoring COLOR.  SPOTS must be less than
      *  the number of neighbors of square R, C. */
     private void setSpots(int r, int c, int spots, String color) {
-        _board.get_board()[r][c] = spots;
+        _board.getBoard()[r][c] = new Square(spots, Color.parseColor(color));
         // FIXME
     }
 
