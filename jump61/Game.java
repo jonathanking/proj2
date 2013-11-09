@@ -32,6 +32,7 @@ class Game {
         _out = new PrintWriter(output, true);
         _err = new PrintWriter(errorOutput, true);
         // FIXME?
+        //perhaps add holder for players?
     }
 
     /** Returns a readonly view of the game board.  This board remains valid
@@ -49,13 +50,10 @@ class Game {
         _playing = true;
         _out.println("Welcome to " + Defaults.VERSION);
         _prompter.print(">");
-        while(_inp.hasNext()) {
+        while (_inp.hasNext()) {
             
         }
-        // while (true) {
-//            _prompter.print(">");
-//            
-//        }
+
         _out.flush();
         return 0;
         // FIXME
@@ -80,7 +78,11 @@ class Game {
 
     /** Add a spot to R C, if legal to do so. */
     void makeMove(int r, int c) {
-        
+        Color who = _board.whoseMove();
+        if (_board.isLegal(who, r, c)) {
+            _board.addSpot(who, r, c);
+        }
+        //FIXME
     }
 
     /** Add a spot to square #N, if legal to do so. */
@@ -103,14 +105,16 @@ class Game {
     /** Check whether we are playing and there is an unannounced winner.
      *  If so, announce and stop play. */
     private void checkForWin() {
-        if(_playing) {
-            
+        Color winner = getBoard().getWinner();
+        if(_playing && (winner != null)) {
+            announceWinner();
+            //stop play
         }
     }
 
     /** Send announcement of winner to my user output. */
     private void announceWinner() {
-        // FIXME
+        message("", getBoard().getWinner().toCapitalizedString() + " wins." );
     }
 
     /** Make PLAYER an AI for subsequent moves. */

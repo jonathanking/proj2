@@ -77,9 +77,9 @@ abstract class Board {
      *  game is won, this will return the loser (assuming legal position). */
     Color whoseMove() {
         if (numMoves()%2!=0) {
-            return RED;
-        } else if (numMoves()%2==0){
             return BLUE;
+        } else if (numMoves()%2==0){
+            return RED;
         }
         return null;
 
@@ -90,6 +90,7 @@ abstract class Board {
         r += 1;
         c += 1;
         return 1 <= r && r <= size() && 1 <= c && c <= size();
+        //FIXME why is it +1?
     }
 
     /** Return true iff S is a valid square number. */
@@ -100,7 +101,6 @@ abstract class Board {
 
     /** Return the row number for square #N. */
     final int row(int n) {
-//        double r = Math.ceil((double)8/3);
         return (int) Math.ceil( (double) n/this.size());
     }
 
@@ -121,21 +121,22 @@ abstract class Board {
     }
 
 
-    /** Returns true iff it would currently be legal for PLAYER to add a spot
-        to square at row R, column C. */
+    /**
+     * Returns true iff it would currently be legal for PLAYER to add a spot to
+     * square at row R, column C.
+     */
     boolean isLegal(Color player, int r, int c) {
-        Color square = getBoard()[r-1][c-1].getColor();
-        if (this.whoseMove() == Color.BLUE &&
-            (square == Color.BLUE || square == Color.WHITE)) {
-            return true;
-        } else if (this.whoseMove() == Color.RED &&
-            (square == Color.RED || square == Color.WHITE )) {
+        Color square = getBoard()[r - 1][c - 1].getColor();
+        if (!(this.whoseMove() == player)) {
+            return false;
+        }
+        if (square == player || square == Color.WHITE) {
             return true;
         } else {
             return false;
         }
         
-        // FIXME
+        // FIXME Do any other things need to be checked to determine a valid move?
     }
 
     /** Returns true iff it would currently be legal for PLAYER to add a spot
@@ -146,14 +147,27 @@ abstract class Board {
 
     /** Returns true iff PLAYER is allowed to move at this point. */
     boolean isLegal(Color player) {
-        return true;
-        // FIXME
+        if (this.whoseMove() == player) {
+            return true;
+        } else {
+            return false;
+        }
+        // FIXME  Do any other things need to be checked to determine a valid move?
+        // Perhaps check if game is won?
     }
 
-    /** Returns the winner of the current position, if the game is over,
-     *  and otherwise null. */
+    /**
+     * Returns the winner of the current position, if the game is over, and
+     * otherwise null.
+     */
     final Color getWinner() {
-        return null;
+        if (numOfColor(Color.RED) == this.size() * this.size()) {
+            return Color.RED;
+        } else if (numOfColor(Color.BLUE) == this.size() * this.size()) {
+            return Color.BLUE;
+        } else {
+            return null;
+        }
         // FIXME
     }
 
@@ -199,9 +213,6 @@ abstract class Board {
     /** Returns my dumped representation. */
     @Override
     public String toString() {
-//        Formatter out = new Formatter();
-//        System.out.print("===\n");
-        //take into acount size of board
         String out = "";
         out+="===\n";
         for (Square[] row : this.getBoard()) {
@@ -212,9 +223,6 @@ abstract class Board {
             out = out.substring(0, out.length() -1) + "\n";
         }
         out+="===\n";
-//        System.out.printf("===\n%4s %s, args");
-        // FIXME
-//        return out.toString();
         return out;
     }
 

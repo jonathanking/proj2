@@ -27,9 +27,12 @@ public class BoardTest {
     }
 
     @Test
-    public void compileTest() {
-        Board B = new MutableBoard(5);
-        assertEquals("bad length", 5, B.size());
+    public void boardCopyTest() {
+        Board B = new MutableBoard(3);
+        B.addSpot(BLUE, 1, 1);
+        checkBoard("#1", B, 1, 1, 1, BLUE);
+        Board copy = new MutableBoard(B);
+        checkBoard("#1", B, 1, 1, 1, BLUE);
 
     }
     
@@ -60,16 +63,14 @@ public class BoardTest {
         checkBoard("#5", B, 1, 1, 1, RED, 2, 1, 3, RED, 1, 2, 1, RED);
 
 
-        
-        
-//        B.undo();
-//        checkBoard("#4U", B, 1, 1, 2, RED, 2, 1, 2, BLUE);
-//        B.undo();
-//        checkBoard("#3U", B, 1, 1, 2, RED, 2, 1, 1, BLUE);
-//        B.undo();
-//        checkBoard("#2U", B, 1, 1, 1, RED, 2, 1, 1, BLUE);
-//        B.undo();
-//        checkBoard("#1U", B, 1, 1, 1, RED);
+        B.undo();
+        checkBoard("#4U", B, 1, 1, 2, RED, 2, 1, 2, BLUE);
+        B.undo();
+        checkBoard("#3U", B, 1, 1, 2, RED, 2, 1, 1, BLUE);
+        B.undo();
+        checkBoard("#2U", B, 1, 1, 1, RED, 2, 1, 1, BLUE);
+        B.undo();
+        checkBoard("#1U", B, 1, 1, 1, RED);
     }
     
     @Test

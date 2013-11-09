@@ -3,6 +3,8 @@ package jump61;
 
 import static jump61.Color.*;
 
+import java.util.ArrayList;
+
 /** A Jump61 board state.
  *  @author Jonathan King
  */
@@ -19,7 +21,10 @@ class MutableBoard extends Board {
 
     /** Sets the representation of the current board. */
     public void setBoard(Square[][] _board) {
-        this._board = _board;
+        int n = _board.length;
+        Square[][] copy = new Square[n][n];
+        java.lang.System.arraycopy(_board, 0, copy, 0, _board.length);
+        this._board = copy;
     }
 
     /** An N x N board in initial configuration. */
@@ -29,13 +34,20 @@ class MutableBoard extends Board {
         _moves = 0;
     }
 
+    /** An N x N board in initial configuration with size set to DEFAULT. */
+    MutableBoard() {
+        setBoard(cleanBoard(Defaults.BOARD_SIZE));
+        _N = Defaults.BOARD_SIZE;
+        _moves = 0;
+    }
+
     /**
      * A board whose initial contents are copied from BOARD0. Clears the undo
      * history.
      */
     MutableBoard(Board board0) {
-//        MutableBoard(board0.size());
         copy(board0);
+        clearUndoHistory();
     }
 
     @Override
@@ -51,7 +63,9 @@ class MutableBoard extends Board {
         Square[][] newBoard = new Square[N][N];
         for (int r = 0; r < N; r++) {
             for (int c = 0; c < N; c++) {
-                newBoard[r][c] = board.getBoard()[r][c];
+                Square orig = board.getBoard()[r][c];
+                Square s = new Square(orig.getSpots(), orig.getColor());
+                newBoard[r][c] = s;
             }
         }
         setBoard(newBoard);
@@ -74,8 +88,6 @@ class MutableBoard extends Board {
 
     @Override
     int spots(int n) {
-//        int row = n/_N;
-//        int col = n%_N;
         return spots(row(n), col(n));
     }
 
@@ -83,20 +95,11 @@ class MutableBoard extends Board {
     Color color(int r, int c) {
         r -= 1;
         c -= 1;
-//        if(r < 0 || c < 0) {
-//            return null;
-//        }
         return getBoard()[r][c].getColor();
-        // FIXME
     }
 
     @Override
     Color color(int n) {
-//        int row = n/_N;
-//        int col = n%_N;
-        int r = row(n);
-        int c = col(n);
-
         return color(row(n), col(n));
     }
 
@@ -124,7 +127,8 @@ class MutableBoard extends Board {
         c -= 1;
         getBoard()[r][c].addSpot(player);
         this.jump(r, c);
-        //FIXME is this where to jump?
+        updateHistory();
+        //FIXME is this where to jump? i think so...
     }
 
     @Override
@@ -144,7 +148,7 @@ class MutableBoard extends Board {
         } else {
             getBoard()[r][c].setColor(WHITE);
         }
-        //FIXME clear undo history ??
+        clearUndoHistory();
     }
 
     @Override
@@ -156,12 +160,35 @@ class MutableBoard extends Board {
     void setMoves(int num) {
         assert num > 0;
         _moves = num;
-        //FIXME clear undo history ??
+        clearUndoHistory();
     }
 
     @Override
     void undo() {
-        // FIXME
+        latestBoard();
+        Board recent = latestBoard();
+        copy(recent);
+        prevBoards.add(recent);
+
+
+    }
+
+    /** Removes and returns the most recent board in the list of PREVBOARDS. */
+    Board latestBoard() {
+        return prevBoards.remove(prevBoards.size()-1);
+    }
+    /** Adds the current board to this list of PREVBOARDS for use in undo(). */
+    void updateHistory() {
+        MutableBoard b = new MutableBoard(this);
+        prevBoards.add(b);
+    }
+    
+    /**
+     * Clears the ArrayList<Board> PREVBOARDS that holds the history of the
+     * session.
+     */
+    void clearUndoHistory() {
+        prevBoards.clear();
     }
 
     /**
@@ -178,30 +205,34 @@ class MutableBoard extends Board {
             getBoard()[r][c].setSpots(curSpots - neighbors);
             if (this.exists(r + 1, c)) {
                 this.addSpot(color, r + 2, c + 1);
+                latestBoard();
                 this.jump(r + 1, c);
             }
             if (this.exists(r - 1, c)) {
                 this.addSpot(color, r, c + 1);
+                latestBoard();
                 this.jump(r - 1, c);
             }
             if (this.exists(r, c + 1)) {
                 this.addSpot(color, r + 1, c + 2);
+                latestBoard();
                 this.jump(r, c + 1);
             }
             if (this.exists(r, c - 1)) {
                 this.addSpot(color, r + 1, c);
+                latestBoard();
                 this.jump(r, c - 1);
             }
         }
-        // FIXME jump() on each neighbor ???
-        // exists does not seem to work very well.
-        // UPDATE: Fixed inputs to exists, should work
     }
 
     /** Total combined number of moves by both sides. */
     protected int _moves;
     /** Convenience variable: size of board (squares along one edge). */
     private int _N;
-    // FIXME
+    /** Holds a list of boards for use in the undo() method. Allows user to
+     * revert to a previous board state.
+     */
+    private ArrayList<Board> prevBoards = new ArrayList<Board>();
 
 }
