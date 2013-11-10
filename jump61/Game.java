@@ -3,7 +3,6 @@ package jump61;
 import java.io.Reader;
 import java.io.Writer;
 import java.io.PrintWriter;
-
 import java.util.Scanner;
 import java.util.Random;
 
@@ -17,6 +16,9 @@ class Game {
 
     /** Name of resource containing help message. */
     private static final String HELP = "jump61/Help.txt";
+    
+    /** If true, program will execute. Once false, will terminate play(). */
+    private boolean _session = true;
 
     /** A new Game that takes command/move input from INPUT, prints
      *  normal output on OUTPUT, prints prompts for input on PROMPTS,
@@ -32,7 +34,6 @@ class Game {
         _out = new PrintWriter(output, true);
         _err = new PrintWriter(errorOutput, true);
         // FIXME?
-        //perhaps add holder for players?
     }
 
     /** Returns a readonly view of the game board.  This board remains valid
@@ -47,16 +48,35 @@ class Game {
      * quantity indicates an error.
      */
     int play() {
-        _playing = true;
         _out.println("Welcome to " + Defaults.VERSION);
-        _prompter.print(">");
-        while (_inp.hasNext()) {
-            
+        while (_session) {
+            while (!_playing) {
+                promptForNext();
+                readExecuteCommand();
+            }
+            // while (promptForNext()) {
+            // readExecuteCommand();
+            // }
+            while (getMove(_move)) {
+
+                makeMove(_move[0], _move[1]);
+                clearMove();
+                checkForWin();
+                System.out.println(_board);
+                // readExecuteCommand();
+                // String command = _inp.next();
+                // command += "HILFINGER";
+            }
         }
 
         _out.flush();
         return 0;
         // FIXME
+    }
+    
+    /** Sets the items in _move to [0, 0]. */
+    void clearMove() {
+        _move[0] = _move[1] = 0;
     }
 
     /** Get a move from my input and place its row and column in
@@ -67,9 +87,9 @@ class Game {
             readExecuteCommand();
         }
         if (_move[0] > 0) {
-            move[0] = _move[0];
-            move[1] = _move[1];
-            _move[0] = 0;
+//            move[0] = _move[0];
+//            move[1] = _move[1];
+//            _move[0] = 0;
             return true;
         } else {
             return false;
@@ -81,13 +101,17 @@ class Game {
         Color who = _board.whoseMove();
         if (_board.isLegal(who, r, c)) {
             _board.addSpot(who, r, c);
+            _board._moves++;
+        } else {
+            reportError("The move to <%d, %d> is not legal.\n", r, c);
         }
-        //FIXME
+
+        // FIXME
     }
 
     /** Add a spot to square #N, if legal to do so. */
     void makeMove(int n) {
-        // FIXME
+        makeMove(_board.row(n), _board.col(n));
     }
 
     /** Return a random integer in the range [0 .. N), uniformly
@@ -104,27 +128,37 @@ class Game {
 
     /** Check whether we are playing and there is an unannounced winner.
      *  If so, announce and stop play. */
-    private void checkForWin() {
+    void checkForWin() {
         Color winner = getBoard().getWinner();
         if(_playing && (winner != null)) {
             announceWinner();
-            //stop play
+            _playing = false;
+//            _session = false; actually, don't end the session
+            
         }
     }
 
     /** Send announcement of winner to my user output. */
     private void announceWinner() {
-        message("", getBoard().getWinner().toCapitalizedString() + " wins." );
+        message("%s wins.", getBoard().getWinner().toCapitalizedString());
     }
 
     /** Make PLAYER an AI for subsequent moves. */
     private void setAuto(Color player) {
-        // FIXME
+        if (player == Color.RED) {
+            _red = new AI(this, Color.RED);
+        } else if (player == Color.BLUE) {
+            _blue = new AI(this, Color.BLUE);
+        }
     }
 
     /** Make PLAYER take manual input from the user for subsequent moves. */
     private void setManual(Color player) {
-        // FIXME
+        if (player == Color.RED) {
+            _red = new HumanPlayer(this, Color.RED);
+        } else if (player == Color.BLUE) {
+            _blue = new HumanPlayer(this, Color.BLUE);
+        }
     }
 
     /** Stop any current game and clear the board to its initial
@@ -179,7 +213,8 @@ class Game {
      *  existing square on the current board. */
     private void saveMove(int r, int c) {
         if (!_board.exists(r, c)) {
-            throw error("move %d %d out of bounds", r, c);
+            reportError("move %d %d out of bounds", r, c);
+            return;
         }
         _move[0] = r;
         _move[1] = c;
@@ -194,31 +229,117 @@ class Game {
     /** Read and execute one command.  Leave the input at the start of
      *  a line, if there is more input. */
     private void readExecuteCommand() {
-        // FIXME
+        String command = "";
+        command = _inp.nextLine().trim();
+        if (command.isEmpty() || command.matches("\\s+")){
+            return;
+        }
+        String[] commands = command.split("\\s+");
+        if (commands.length == 2 && commands[0].matches("\\d+")
+            && commands[1].matches("\\d+") && _playing) {
+            int r = Integer.parseInt(commands[0]);
+            int c = Integer.parseInt(commands[1]);
+            saveMove(r, c);
+            return;
+        }
+        String[] args = new String[commands.length-1];
+        java.lang.System.arraycopy(commands, 1, args, 0, args.length);
+        executeCommand(commands[0], args);
     }
 
     /** Gather arguments and execute command CMND.  Throws GameException
      *  on errors. */
-    private void executeCommand(String cmnd) {
-        switch (cmnd) {
-        case "\n": case "\r\n":
-            return;
-        case "#":
-            break;
-        case "clear":
-            //abandon current game, clear board. stop playing
-        case "start":
-            
-        default:
-            throw error("bad command: '%s'", cmnd);
+    private void executeCommand(String cmnd, String[] args) {
+        try {
+            switch (cmnd) {
+            case "\n": case "\r\n":
+                return;
+            case "#":
+                break;
+            case "clear":
+                playFalse();
+                _board.clear(_board.size());
+                break;
+            case "start":
+                _playing = true;
+                break;
+            case "quit":
+                System.exit(0);
+                //FIXME
+                break;
+            case "auto":
+                playFalse();
+                setAuto(Color.parseColor(args[0]));
+                break;
+            case "manual":
+                playFalse();
+                setManual(Color.parseColor(args[0]));
+                break;
+            case "size":
+                playFalse();
+                _board.clear(Integer.parseInt(args[0]));
+                break;
+            case "move":
+                playFalse();
+                _board.setMoves(Integer.parseInt(args[0]));
+                break;
+            case "set":
+                int r = Integer.parseInt(args[0]);
+                int c = Integer.parseInt(args[1]);
+                int n = Integer.parseInt(args[2]);
+                String player = args[3];
+                Color p = Color.WHITE;
+                if (player.equals("r")) {
+                    p = Color.RED;
+                } else if (player.equals("b")) {
+                    p = Color.BLUE;
+                }
+                playFalse();
+                _board.set(r, c, n, p);
+                break;
+            case "dump":
+                dump();
+                break;
+            case "seed":
+                setSeed(Long.parseLong(args[0]));
+                break;
+            case "help":
+                help();
+                break;
+            default:
+                if (_playing) {
+                    reportError("Syntax error in move command.");
+                } else {
+                    throw error("bad command: '%s'", cmnd);
+                }
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            reportError("%s", "Wrong number of arguments for command.");
         }
     }
 
-    /** Print a prompt and wait for input. Returns true iff there is another
-     *  token. */
+    /**
+     * Print a prompt and wait for input. Returns true iff there is another
+     * token.
+     */
     private boolean promptForNext() {
-        return true;
+        String prompt = "> ";
+        if (_playing) {
+            prompt = _board.whoseMove() + "> ";
+        }
+//        _prompter.write(prompt);
+        System.out.print(prompt);
+        if (_inp.hasNext()) {
+            return true;
+        } else {
+            return false;
+        }
         // FIXME
+    }
+    
+    /** Changes the boolean value of _PLAYING to FALSE. */
+    void playFalse() {
+        _playing = false;
     }
 
     /** Send an error message to the user formed from arguments FORMAT
@@ -240,7 +361,7 @@ class Game {
     private final PrintWriter _err;
 
     /** The board on which I record all moves. */
-    private final Board _board;
+    private final MutableBoard _board;
     /** A readonly view of _board. */
     private final Board _readonlyBoard;
 
@@ -250,7 +371,10 @@ class Game {
     /** True iff a game is currently in progress. */
     private boolean _playing;
 
-    // FIXME
+    /** The player with the color RED. */
+    private Player _red;
+    /** The player with the color BLUE. */
+    private Player _blue;
 
    /** Used to return a move entered from the console.  Allocated
      *  here to avoid allocations. */

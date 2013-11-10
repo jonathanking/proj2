@@ -1,15 +1,17 @@
 package jump61;
 
-
 import static jump61.Color.*;
 
 import java.util.ArrayList;
 
-/** A Jump61 board state.
- *  @author Jonathan King
+/**
+ * A Jump61 board state.
+ * @author Jonathan King
  */
 
 class MutableBoard extends Board {
+    // /** The game that is using the Board. */
+    // private Game _game;
 
     /** Holds the information of the board as a 2D Array of Squares. */
     private Square[][] _board;
@@ -71,7 +73,7 @@ class MutableBoard extends Board {
         setBoard(newBoard);
         _N = N;
         _moves = board.numMoves();
-      //FIXME copy other characteristics?
+        // FIXME copy other characteristics?
     }
 
     @Override
@@ -113,7 +115,7 @@ class MutableBoard extends Board {
         int total = 0;
         for (int r = 0; r < _N; r++) {
             for (int c = 0; c < _N; c++) {
-                if (getBoard()[r][c].getColor() == color){
+                if (getBoard()[r][c].getColor() == color) {
                     total++;
                 }
             }
@@ -128,7 +130,6 @@ class MutableBoard extends Board {
         getBoard()[r][c].addSpot(player);
         this.jump(r, c);
         updateHistory();
-        //FIXME is this where to jump? i think so...
     }
 
     @Override
@@ -163,26 +164,30 @@ class MutableBoard extends Board {
         clearUndoHistory();
     }
 
+    /** Increase the number of moves by one. */
+    void increaseMoves() {
+        _moves++;
+    }
+
     @Override
     void undo() {
         latestBoard();
         Board recent = latestBoard();
         copy(recent);
         prevBoards.add(recent);
-
-
     }
 
     /** Removes and returns the most recent board in the list of PREVBOARDS. */
     Board latestBoard() {
-        return prevBoards.remove(prevBoards.size()-1);
+        return prevBoards.remove(prevBoards.size() - 1);
     }
+
     /** Adds the current board to this list of PREVBOARDS for use in undo(). */
     void updateHistory() {
         MutableBoard b = new MutableBoard(this);
         prevBoards.add(b);
     }
-    
+
     /**
      * Clears the ArrayList<Board> PREVBOARDS that holds the history of the
      * session.
@@ -193,32 +198,36 @@ class MutableBoard extends Board {
 
     /**
      * Do all jumping on this board, assuming that initially, S is the only
-     * square that might be over-full. When adding spots, there is +1 added
-     * to each addSpot() call due to my Square[][] representation of the board.
+     * square that might be over-full. When adding spots, there is +1 added to
+     * each addSpot() and exists() call due to my Square[][] representation of
+     * the board.
      */
     private void jump(int r, int c) {
-
+        // _game.checkForWin();
+        if (this.getWinner() != null) {
+            return;
+        }
         Color color = getBoard()[r][c].getColor();
         int neighbors = this.neighbors(r, c);
         int curSpots = getBoard()[r][c].getSpots();
         if (curSpots > neighbors) {
             getBoard()[r][c].setSpots(curSpots - neighbors);
-            if (this.exists(r + 1, c)) {
+            if (this.exists(r + 2, c + 1)) {
                 this.addSpot(color, r + 2, c + 1);
                 latestBoard();
                 this.jump(r + 1, c);
             }
-            if (this.exists(r - 1, c)) {
+            if (this.exists(r, c + 1)) {
                 this.addSpot(color, r, c + 1);
                 latestBoard();
                 this.jump(r - 1, c);
             }
-            if (this.exists(r, c + 1)) {
+            if (this.exists(r + 1, c + 2)) {
                 this.addSpot(color, r + 1, c + 2);
                 latestBoard();
                 this.jump(r, c + 1);
             }
-            if (this.exists(r, c - 1)) {
+            if (this.exists(r + 1, c)) {
                 this.addSpot(color, r + 1, c);
                 latestBoard();
                 this.jump(r, c - 1);
@@ -230,7 +239,8 @@ class MutableBoard extends Board {
     protected int _moves;
     /** Convenience variable: size of board (squares along one edge). */
     private int _N;
-    /** Holds a list of boards for use in the undo() method. Allows user to
+    /**
+     * Holds a list of boards for use in the undo() method. Allows user to
      * revert to a previous board state.
      */
     private ArrayList<Board> prevBoards = new ArrayList<Board>();
