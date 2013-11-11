@@ -1,15 +1,16 @@
 package jump61;
 
-/** A ConstantBoard is a view of an existing Board that does not allow
- *  modifications. Changes made to the underlying Board are reflected in
- *  ConstantBoards formed from it.
- *  @author P. N. Hilfinger
+/**
+ * A ConstantBoard is a view of an existing Board that does not allow
+ * modifications. Changes made to the underlying Board are reflected in
+ * ConstantBoards formed from it.
+ * @author P. N. Hilfinger
  */
 class ConstantBoard extends Board {
 
     /** Holds the information of the board as a 2D Array of Squares. */
     private Square[][] _board;
-    
+
     /** A new ConstantBoard that allows a read-only view of BOARD. */
     ConstantBoard(Board board) {
         _boardOrigin = board;
@@ -80,15 +81,15 @@ class ConstantBoard extends Board {
     private Board _boardOrigin;
 
     @Override
+    /** Returns the board in Square[][] form. */
     Square[][] getBoard() {
-        // TODO Auto-generated method stub
         return _board;
     }
 
     @Override
+    /** Sets the board. */
     void setBoard(Square[][] _board) {
-        // TODO Auto-generated method stub
-        
+        return;
     }
 
 }

@@ -14,9 +14,6 @@ import static jump61.Color.*;
  */
 abstract class Board {
 
-    // /** Holds the information of the board. */
-    // private Square[][] _board;
-
     /** Returns the String[][] representation of the board. */
     abstract Square[][] getBoard();
 
@@ -126,7 +123,6 @@ abstract class Board {
     /** Return the square number of row R, column C. */
     final int sqNum(int r, int c) {
         return 1;
-        // FIXME unused
     }
 
     /**
@@ -143,9 +139,6 @@ abstract class Board {
         } else {
             return false;
         }
-
-        // FIXME Do any other things need to be checked to determine a valid
-        // move?
     }
 
     /**
@@ -158,14 +151,11 @@ abstract class Board {
 
     /** Returns true iff PLAYER is allowed to move at this point. */
     boolean isLegal(Color player) {
-        if (this.whoseMove() == player) {
+        if (this.whoseMove() == player && this.getWinner() == null) {
             return true;
         } else {
             return false;
         }
-        // FIXME Do any other things need to be checked to determine a valid
-        // move?
-        // Perhaps check if game is won?
     }
 
     /**
@@ -249,8 +239,20 @@ abstract class Board {
      * toString).
      */
     public String toDisplayString() {
-        StringBuilder out = new StringBuilder(toString());
-        // FIXME not yet implemented, also should add "board" command
+        StringBuilder out = new StringBuilder();
+        String numLine = "     ";
+        int size = this.size();
+        for (int r = 0; r < size; r++) {
+            out.append(" ");
+            out.append(r + 1 + "  ");
+            for (Square s : this.getBoard()[r]) {
+                out.append(s + " ");
+            }
+            out.append("\n");
+            numLine += r + 1 + "  ";
+        }
+        out.append(numLine);
+
         return out.toString();
     }
 

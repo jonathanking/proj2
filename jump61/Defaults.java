@@ -1,7 +1,8 @@
 package jump61;
 
-/** Collected constants used as default or initial values.
- *  @author
+/**
+ * Collected constants used as default or initial values.
+ * @author Jonathan King
  */
 class Defaults {
 
@@ -11,5 +12,4 @@ class Defaults {
     /** Default board size. */
     static final int BOARD_SIZE = 6;
 
-    // FIXME ?
 }

@@ -14,12 +14,11 @@ public class GameTest {
     @Test
     public void setUp() throws Exception {
         Writer output = new OutputStreamWriter(System.out);
-        Game game = new Game(new InputStreamReader(System.in),
-                             output, output,
-                             new OutputStreamWriter(System.err));
-        
-        System.out.print(game.play());
-    }
+        Game game =
+            new Game(new InputStreamReader(System.in), output, output,
+                new OutputStreamWriter(System.err));
 
+        assertEquals(game.play(), 0);
+    }
 
 }

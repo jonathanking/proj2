@@ -11,12 +11,14 @@ public class Square {
     /** The current color of a square. */
     private Color _color;
     /** The position of the square. */
-    private int[] _position = {0, 0};
+    private int[] _position = { 0, 0 };
     /** The board that the square is on. */
     private Board _sqBoard;
-    /** Designates square as a corner, edge, or center type piece.
-     * Corner = 2, edge = 3, center = 4. */
-    private int locationType; 
+    /**
+     * Designates square as a corner, edge, or center type piece. Corner = 2,
+     * edge = 3, center = 4.
+     */
+    private int locationType;
 
     /** Initializes a new square that is white and has no spots. */
     Square(int r, int c) {
@@ -25,7 +27,7 @@ public class Square {
         _position[0] = r;
         _position[1] = c;
     }
-    
+
     /** Initializes a new square that is white and has no spots. */
     Square(int r, int c, Board b) {
         setSpots(0);
@@ -84,15 +86,16 @@ public class Square {
     public void setColor(Color color) {
         this._color = color;
     }
-    
+
     /** Returns a Square[] that holds the neighbors of this square. */
     Square[] neighboringSquares() {
         int r = _position[0];
         int c = _position[1];
         int pos = 0;
-        Square[] list = new Square[_sqBoard.neighbors(_position[0], _position[1])];
+        Square[] list =
+            new Square[_sqBoard.neighbors(_position[0], _position[1])];
         if (_sqBoard.exists(r + 2, c + 1)) {
-            list[pos] = _sqBoard.getBoard()[r+1][c];
+            list[pos] = _sqBoard.getBoard()[r + 1][c];
             pos++;
         }
         if (_sqBoard.exists(r, c + 1)) {
@@ -120,12 +123,10 @@ public class Square {
     }
 
     /**
-     * Returns the value of locationType.
-     * Corner = 2, edge = 3, center = 4.
+     * Returns the value of locationType. Corner = 2, edge = 3, center = 4.
      */
     public int getLocationType() {
         return locationType;
     }
-
 
 }

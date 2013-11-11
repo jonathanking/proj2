@@ -5,15 +5,14 @@ import static jump61.Color.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/** Unit tests of Boards.
- *  @author
+/**
+ * Unit tests of Boards.
+ * @author Jonathan King
  */
 public class BoardTest {
 
     private static final String NL = System.getProperty("line.separator");
 
-    
-    
     @Test
     public void testSize() {
         Board B = new MutableBoard(5);
@@ -35,7 +34,7 @@ public class BoardTest {
         checkBoard("#1", B, 1, 1, 1, BLUE);
 
     }
-    
+
     @Test
     public void testSet() {
         Board B = new MutableBoard(5);
@@ -62,7 +61,6 @@ public class BoardTest {
         B.addSpot(RED, 1, 1);
         checkBoard("#5", B, 1, 1, 1, RED, 2, 1, 3, RED, 1, 2, 1, RED);
 
-
         B.undo();
         checkBoard("#4U", B, 1, 1, 2, RED, 2, 1, 2, BLUE);
         B.undo();
@@ -72,7 +70,7 @@ public class BoardTest {
         B.undo();
         checkBoard("#1U", B, 1, 1, 1, RED);
     }
-    
+
     @Test
     public void testFlip1() {
         Board B = new MutableBoard(2);
@@ -81,27 +79,28 @@ public class BoardTest {
         B.addSpot(RED, 2, 1);
         B.set(2, 2, 2, BLUE);
         B.addSpot(RED, 1, 1);
-        checkBoard("#1", B, 1, 1, 2, RED, 1, 2, 1, BLUE, 2, 1, 1, RED, 2, 2, 2, BLUE);
+        checkBoard("#1", B, 1, 1, 2, RED, 1, 2, 1, BLUE, 2, 1, 1, RED, 2, 2, 2,
+            BLUE);
         B.addSpot(RED, 1, 1);
-        checkBoard("#2", B, 1, 1, 1, RED, 1, 2, 2, RED, 2, 1, 2, RED, 2, 2, 2, BLUE);
+        checkBoard("#2", B, 1, 1, 1, RED, 1, 2, 2, RED, 2, 1, 2, RED, 2, 2, 2,
+            BLUE);
 
     }
-    
 
     private void checkBoard(String msg, Board B, Object... contents) {
         for (int k = 0; k < contents.length; k += 4) {
-            String M = String.format("%s at %d %d", msg, contents[k],
-                                     contents[k + 1]);
+            String M =
+                String.format("%s at %d %d", msg, contents[k], contents[k + 1]);
             assertEquals(M, (int) contents[k + 2],
-                         B.spots((int) contents[k], (int) contents[k + 1]));
+                B.spots((int) contents[k], (int) contents[k + 1]));
             assertEquals(M, contents[k + 3],
-                         B.color((int) contents[k], (int) contents[k + 1]));
+                B.color((int) contents[k], (int) contents[k + 1]));
         }
         int c;
         c = 0;
         for (int i = B.size() * B.size(); i > 0; i -= 1) {
             assertTrue("bad white square #" + i,
-                       (B.color(i) == WHITE) == (B.spots(i) == 0));
+                (B.color(i) == WHITE) == (B.spots(i) == 0));
             if (B.color(i) != WHITE) {
                 c += 1;
             }
