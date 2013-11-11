@@ -1,8 +1,5 @@
 package jump61;
 
-import java.util.ArrayList;
-import java.util.Formatter;
-
 import static jump61.Color.*;
 
 /**
@@ -20,8 +17,8 @@ abstract class Board {
     /** The game associated with this board. */
     private Game _game;
 
-    /** Sets the representation of the current board. */
-    abstract void setBoard(Square[][] _board);
+    /** Sets the representation of the current BOARD. */
+    abstract void setBoard(Square[][] board);
 
     /**
      * Returns a 2D array of squares (size N x N) all initialized as new
@@ -134,11 +131,7 @@ abstract class Board {
         if (!(this.whoseMove() == player)) {
             return false;
         }
-        if (square == player || square == Color.WHITE) {
-            return true;
-        } else {
-            return false;
-        }
+        return (square == player || square == Color.WHITE);
     }
 
     /**
@@ -151,11 +144,7 @@ abstract class Board {
 
     /** Returns true iff PLAYER is allowed to move at this point. */
     boolean isLegal(Color player) {
-        if (this.whoseMove() == player && this.getWinner() == null) {
-            return true;
-        } else {
-            return false;
-        }
+        return (this.whoseMove() == player && this.getWinner() == null);
     }
 
     /**

@@ -19,7 +19,7 @@ class AI extends Player {
 
     @Override
     void makeMove() {
-        Move m = findBestMove(getColor(), getBoard(), 4, 350);
+        Move m = findBestMove(getColor(), getBoard(), 4, hundred * 3.5);
         getGame().makeMove(m.getR(), m.getC());
         getGame().message("%s moves %d %d.", getColor().toCapitalizedString(),
             m.getR(), m.getC());
@@ -42,18 +42,19 @@ class AI extends Player {
     }
 
     /**
-     * A legal move for WHO that either has an estimated value >= CUTOFF or that
-     * has the best estimated value for player WHO, starting from position
-     * START, and looking up to DEPTH moves ahead.
+     * Returns legal move for WHO that either has an estimated value >= CUTOFF
+     * or that has the best estimated value for player WHO, starting from
+     * position START, and looking up to DEPTH moves ahead.
      */
     public Move findBestMove(Color who, Board start, int depth, double cutoff) {
 
-        if (start.getWinner() == who)
-            return WON_GAME;
-        else if (start.getWinner() == who.opposite())
-            return LOST_GAME;
-        else if (depth == 0)
+        if (start.getWinner() == who) {
+            return _wonGame;
+        } else if (start.getWinner() == who.opposite()) {
+            return _lostGame;
+        } else if (depth == 0) {
             return guessBestMove(who, start, cutoff);
+        }
 
         Move bestSoFar = reallyBadMove(who, start);
         for (Move M : getLegalMoves(who, start)) {
@@ -66,13 +67,18 @@ class AI extends Player {
             if (-response.value() > bestSoFar.value()) {
                 M.setValue(-response.value());
                 bestSoFar = M;
-                if (M.value() >= cutoff)
+                if (M.value() >= cutoff) {
                     break;
+                }
             }
         }
         return bestSoFar;
     }
 
+    /**
+     * Returns an ArrayList<Move> that is a list of every legal move for WHO on
+     * START.
+     */
     private ArrayList<Move> getLegalMoves(Color who, Board start) {
         int N = start.size();
         ArrayList<Move> moves = new ArrayList<Move>();
@@ -88,6 +94,7 @@ class AI extends Player {
         return moves;
     }
 
+    /** Returns a guess of the best move for WHO on START with CUTOFF. */
     private Move guessBestMove(Color who, Board start, double cutoff) {
 
         Move bestSoFar;
@@ -98,8 +105,9 @@ class AI extends Player {
             M.setValue(staticEval(who, next));
             if (M.value() > bestSoFar.value()) {
                 bestSoFar = M;
-                if (M.value() >= cutoff)
+                if (M.value() >= cutoff) {
                     break;
+                }
             }
         }
         return bestSoFar;
@@ -111,7 +119,7 @@ class AI extends Player {
      */
     private int staticEval(Color p, Board b) {
         if (b.getWinner() == p) {
-            return WON_GAME.value();
+            return _wonGame.value();
         }
         int size = b.size();
         int mySquares = b.numOfColor(p);
@@ -127,7 +135,7 @@ class AI extends Player {
     /**
      * Returns the *value* of high-weight squares with a lot of spots and a lot
      * of neighbors. Increases value if square is ready to be flipped and it's
-     * neighbors are as well.
+     * neighbors are as well. True for player P on board B.
      */
     int highWeightSquares(Color p, Board b) {
         int x = 0;
@@ -136,7 +144,7 @@ class AI extends Player {
             for (int c = 0; c < N; c++) {
                 Square orig = b.getBoard()[r][c];
                 if (orig.getSpots() == orig.getLocationType()) {
-                    x += 50;
+                    x += hundred/2;
                     Square[] neigh = orig.neighboringSquares();
                     for (Square s : neigh) {
                         if (s.getLocationType() == 2 && s.getSpots() == 2) {
@@ -144,7 +152,8 @@ class AI extends Player {
                         } else if (s.getLocationType() == 3
                             && s.getSpots() == 3) {
                             x += 8;
-                        } else if ((s.getLocationType() == 4 && s.getSpots() == 4)) {
+                        } else if ((s.getLocationType() == 4 &&
+                            s.getSpots() == 4)) {
                             x += 10;
                         }
                     }
@@ -173,7 +182,10 @@ class AI extends Player {
         return x;
     }
 
-    /** Returns *value* of corner squares on B that are waiting to be claimed. */
+    /**
+     * Returns *value* of corner squares on B that are waiting to be claimed by
+     * P.
+     */
     int cornersNotOwnedByPlayer(Color p, Board b) {
         int x = 0;
         Square topL = b.getBoard()[0][0];
@@ -183,28 +195,28 @@ class AI extends Player {
         Square[] corners = { topL, topR, bottomL, bottomR };
         for (Square s : corners) {
             if (s.getColor() == p) {
-                x += 100;
+                x += hundred;
             }
         }
         return x;
     }
 
     /** Infinity. */
-    private final int INFINITY = 7777777;
+    private final int _infinity = 7777777;
 
     /** A Move with a value that represents a forced win. */
-    private final Move WON_GAME = new Move(INFINITY);
+    private final Move _wonGame = new Move(_infinity);
 
-    /** A 7-digit number that represents the value of a game */
-    private final Move LOST_GAME = new Move(-INFINITY);
+    /** A 7-digit number that represents the value of a game. */
+    private final Move _lostGame = new Move(-_infinity);
 
-    /** A Move with a value of -100. */
-    private final Move REALLY_BAD_MOVE = new Move(-100);
+    /** Hundred. */
+    private final int hundred = 100;
 
-    /** Returns a REALL BAD MOVE with a low value. */
+    /** Returns a REALL BAD MOVE with a low value. Takes C and B. */
     Move reallyBadMove(Color c, Board b) {
         Move m = getLegalMoves(c, b).get(0);
-        m.setValue(-100);
+        m.setValue(-hundred);
         return m;
     }
 }

@@ -20,7 +20,9 @@ public class Square {
      */
     private int locationType;
 
-    /** Initializes a new square that is white and has no spots. */
+    /**
+     * Initializes a new square that is white and has 0 spots. At position R C.
+     */
     Square(int r, int c) {
         setSpots(0);
         setColor(Color.WHITE);
@@ -28,7 +30,10 @@ public class Square {
         _position[1] = c;
     }
 
-    /** Initializes a new square that is white and has no spots. */
+    /**
+     * Initializes a new square that is white and has no spots. At position R C
+     * on Board B.
+     */
     Square(int r, int c, Board b) {
         setSpots(0);
         setColor(Color.WHITE);
@@ -40,7 +45,7 @@ public class Square {
         }
     }
 
-    /** Creates a square SPOTS spots and a COLOR. */
+    /** Creates a square with SPOTS and a COLOR. At position R C on Board B. */
     Square(int spots, Color color, int r, int c, Board b) {
         setSpots(spots);
         setColor(color);
@@ -57,13 +62,13 @@ public class Square {
         this.setColor(this.getColor().opposite());
     }
 
-    /** Adds one spot to the current square's spots. */
+    /** Adds one spot of PLAYER 's color to the current square's spots. */
     public void addSpot(Color player) {
         this.setColor(player);
         setSpots(getSpots() + 1);
     }
 
-    /** Gets the number of spots on the current Square. */
+    /** Returns the number of spots on the current Square. */
     public int getSpots() {
         return _spots;
     }

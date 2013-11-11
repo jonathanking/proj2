@@ -19,11 +19,11 @@ class MutableBoard extends Board {
         return _board;
     }
 
-    /** Sets the representation of the current board. */
-    public void setBoard(Square[][] _board) {
-        int n = _board.length;
+    /** Sets the representation of the current BOARD. */
+    public void setBoard(Square[][] board) {
+        int n = board.length;
         Square[][] copy = new Square[n][n];
-        java.lang.System.arraycopy(_board, 0, copy, 0, _board.length);
+        java.lang.System.arraycopy(board, 0, copy, 0, board.length);
         this._board = copy;
     }
 
@@ -198,7 +198,7 @@ class MutableBoard extends Board {
      * Do all jumping on this board, assuming that initially, S is the only
      * square that might be over-full. When adding spots, there is +1 added to
      * each addSpot() and exists() call due to my Square[][] representation of
-     * the board.
+     * the board. Takes R row and C col.
      */
     private void jump(int r, int c) {
         if (this.getWinner() != null) {

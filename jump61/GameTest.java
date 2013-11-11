@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public class GameTest {

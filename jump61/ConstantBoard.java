@@ -88,7 +88,7 @@ class ConstantBoard extends Board {
 
     @Override
     /** Sets the board. */
-    void setBoard(Square[][] _board) {
+    void setBoard(Square[][] board) {
         return;
     }
 

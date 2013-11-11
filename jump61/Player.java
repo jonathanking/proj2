@@ -50,12 +50,13 @@ abstract class Player {
     /** The game I'm in. */
     private final Game _game;
 
-    /** Make move M on Board B for Color C. */
+    /** Make MOVE on BOARD for COLOR. */
     void makeMove(Move move, Board board, Color color) {
         board.addSpot(color, move.getR(), move.getC());
 
     }
 
+    /** A Move in the game of jump61 that has a position and value. */
     class Move {
         /** The value of this move. More positive, better move. */
         private int _value = 0;
@@ -66,14 +67,14 @@ abstract class Player {
          */
         private int[] rc = new int[2];
 
-        /* A move that can be made by a player. */
+        /** A move that can be made by a player. */
         Move(int r, int c) {
             rc[0] = r + 1;
             rc[1] = c + 1;
 
         }
 
-        /* A move that can be made by a player. */
+        /** A move that can be made by a player. */
         Move(int x) {
             _value = x;
         }
@@ -83,15 +84,15 @@ abstract class Player {
             return _value;
         }
 
-        /** Sets the VALUE of this move to n. */
+        /** Sets the VALUE of this move to N. */
         void setValue(int n) {
             _value = n;
         }
-
+        /** Returns the row. */
         int getR() {
             return rc[0];
         }
-
+        /** Returns the col. */
         int getC() {
             return rc[1];
         }

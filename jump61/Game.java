@@ -7,11 +7,9 @@ import java.util.Scanner;
 import java.util.Random;
 
 import static jump61.Color.*;
-import static jump61.GameException.error;
 
 /**
  * Main logic for playing (a) game(s) of Jump61.
- * 
  * @author Jonathan King
  */
 class Game {
@@ -99,12 +97,7 @@ class Game {
 
             readExecuteCommand();
         }
-        if (_move[0] > 0) {
-
-            return true;
-        } else {
-            return false;
-        }
+        return (_move[0] > 0);
     }
 
     /** Add a spot to R C, if legal to do so. */
@@ -226,9 +219,45 @@ class Game {
         java.lang.System.arraycopy(commands, 1, args, 0, args.length);
         executeCommand(commands[0], args);
     }
+    
+    /** Place SPOTS spots on square R:C and color the square red or
+     *  blue depending on whether COLOR is "r" or "b".  If SPOTS is
+     *  0, clears the square, ignoring COLOR.  SPOTS must be less than
+     *  the number of neighbors of square R, C. */
+    private void setSpots(int r, int c, int spots, String color) {
+        Color p = Color.WHITE;
+        if (color.equals("r")) {
+            p = Color.RED;
+        } else if (color.equals("b")) {
+            p = Color.BLUE;
+        }
+        playFalse();
+        _board.set(r, c, spots, p);
+    }
+    
+    /**
+     * Stop any current game and set the board to an empty N x N board with
+     * numMoves() == 0.
+     */
+    private void setSize(int n) {
+        playFalse();
+        if (n <= 1) {
+            reportError("Error: %d is not a valid board size.", n);
+            return;
+        }
+        _board.clear(n);
+    }
+
+    /** Starts the game and clears the board if a previous game has finished. */
+    void startPlaying() {
+        _playing = true;
+        if (_board.getWinner() != null) {
+            _board.clear(_board.size());
+        }
+    }
 
     /**
-     * Gather arguments and execute command CMND. Throws GameException on
+     * Gather arguments ARGS and execute command CMND. Throws GameException on
      * errors.
      */
     private void executeCommand(String cmnd, String[] args) {
@@ -244,10 +273,7 @@ class Game {
                 _board.clear(_board.size());
                 break;
             case "start":
-                _playing = true;
-                if (_board.getWinner() != null) {
-                    _board.clear(_board.size());
-                }
+                startPlaying();
                 break;
             case "quit":
                 System.exit(0);
@@ -261,31 +287,15 @@ class Game {
                 setManual(Color.parseColor(args[0]));
                 break;
             case "size":
-                playFalse();
-                int s = Integer.parseInt(args[0]);
-                if (s <= 1) {
-                    reportError("Error: %d is not a valid board size.", s);
-                    break;
-                }
-                _board.clear(s);
+                setSize(Integer.parseInt(args[0]));
                 break;
             case "move":
                 playFalse();
                 _board.setMoves(Integer.parseInt(args[0]));
                 break;
             case "set":
-                int r = Integer.parseInt(args[0]);
-                int c = Integer.parseInt(args[1]);
-                int n = Integer.parseInt(args[2]);
-                String player = args[3];
-                Color p = Color.WHITE;
-                if (player.equals("r")) {
-                    p = Color.RED;
-                } else if (player.equals("b")) {
-                    p = Color.BLUE;
-                }
-                playFalse();
-                _board.set(r, c, n, p);
+                setSpots(Integer.parseInt(args[0]), Integer.parseInt(args[1]),
+                    Integer.parseInt(args[2]), args[3]);
                 break;
             case "dump":
                 dump();
@@ -303,14 +313,22 @@ class Game {
                 help();
                 break;
             default:
-                if (_playing) {
-                    reportError("Syntax error in move command.");
-                } else {
-                    reportError("bad command: '%s'", cmnd);
-                }
+                defaultExecutionError(cmnd, args);
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             reportError("%s", "Wrong number of arguments for command.");
+        }
+    }
+
+    /**
+     * Default behavior for the executeCommand function. Requires a COMMAND and
+     * ARGS.
+     */
+    void defaultExecutionError(String command, String[] args) {
+        if (_playing) {
+            reportError("Syntax error in move command.");
+        } else {
+            reportError("bad command: '%s'", command);
         }
     }
 
@@ -328,11 +346,7 @@ class Game {
         }
         _prompter.print(prompt);
         _prompter.flush();
-        if (_inp.hasNext()) {
-            return true;
-        } else {
-            return false;
-        }
+        return _inp.hasNext();
 
     }
 

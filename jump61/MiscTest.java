@@ -10,19 +10,19 @@ public class MiscTest {
     public void SquareIndexing() {
         Board myBoard = new MutableBoard(5);
         int n = 13;
-        int _N = myBoard.size();
-        int row = n / _N;
-        int col = n % _N;
+        int N = myBoard.size();
+        int row = n / N;
+        int col = n % N;
         assertEquals(row, 2);
         assertEquals(col, 3);
         n = 24;
-        row = n / _N;
-        col = n % _N;
+        row = n / N;
+        col = n % N;
         assertEquals(row, 4);
         assertEquals(col, 4);
         n = 0;
-        row = n / _N;
-        col = n % _N;
+        row = n / N;
+        col = n % N;
         assertEquals(row, 0);
         assertEquals(col, 0);
     }
