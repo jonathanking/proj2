@@ -219,11 +219,13 @@ class Game {
         java.lang.System.arraycopy(commands, 1, args, 0, args.length);
         executeCommand(commands[0], args);
     }
-    
-    /** Place SPOTS spots on square R:C and color the square red or
-     *  blue depending on whether COLOR is "r" or "b".  If SPOTS is
-     *  0, clears the square, ignoring COLOR.  SPOTS must be less than
-     *  the number of neighbors of square R, C. */
+
+    /**
+     * Place SPOTS spots on square R:C and color the square red or blue
+     * depending on whether COLOR is "r" or "b". If SPOTS is 0, clears the
+     * square, ignoring COLOR. SPOTS must be less than the number of neighbors
+     * of square R, C.
+     */
     private void setSpots(int r, int c, int spots, String color) {
         Color p = Color.WHITE;
         if (color.equals("r")) {
@@ -234,7 +236,7 @@ class Game {
         playFalse();
         _board.set(r, c, spots, p);
     }
-    
+
     /**
      * Stop any current game and set the board to an empty N x N board with
      * numMoves() == 0.

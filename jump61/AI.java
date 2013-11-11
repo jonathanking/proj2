@@ -19,7 +19,7 @@ class AI extends Player {
 
     @Override
     void makeMove() {
-        Move m = findBestMove(getColor(), getBoard(), 4, hundred * 3.5);
+        Move m = findBestMove(getColor(), getBoard(), 4, (hundred * 3) / 2);
         getGame().makeMove(m.getR(), m.getC());
         getGame().message("%s moves %d %d.", getColor().toCapitalizedString(),
             m.getR(), m.getC());
@@ -144,7 +144,7 @@ class AI extends Player {
             for (int c = 0; c < N; c++) {
                 Square orig = b.getBoard()[r][c];
                 if (orig.getSpots() == orig.getLocationType()) {
-                    x += hundred/2;
+                    x += hundred / 2;
                     Square[] neigh = orig.neighboringSquares();
                     for (Square s : neigh) {
                         if (s.getLocationType() == 2 && s.getSpots() == 2) {
@@ -152,8 +152,8 @@ class AI extends Player {
                         } else if (s.getLocationType() == 3
                             && s.getSpots() == 3) {
                             x += 8;
-                        } else if ((s.getLocationType() == 4 &&
-                            s.getSpots() == 4)) {
+                        } else if ((s.getLocationType() == 4
+                            && s.getSpots() == 4)) {
                             x += 10;
                         }
                     }

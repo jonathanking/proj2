@@ -7,7 +7,7 @@ import org.junit.Test;
 public class MiscTest {
 
     @Test
-    public void SquareIndexing() {
+    public void squareIndexing() {
         Board myBoard = new MutableBoard(5);
         int n = 13;
         int N = myBoard.size();

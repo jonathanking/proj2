@@ -67,14 +67,14 @@ abstract class Player {
          */
         private int[] rc = new int[2];
 
-        /** A move that can be made by a player. */
+        /** A move that can be made by a player on row R col C. */
         Move(int r, int c) {
             rc[0] = r + 1;
             rc[1] = c + 1;
 
         }
 
-        /** A move that can be made by a player. */
+        /** A move that can be made by a player with value X. */
         Move(int x) {
             _value = x;
         }
