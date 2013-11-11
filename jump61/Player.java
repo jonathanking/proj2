@@ -47,4 +47,59 @@ abstract class Player {
     /** The game I'm in. */
     private final Game _game;
 
+    /** Make move M on Board B for Color C. */
+    void makeMove(Move move, Board board, Color color) {
+        board.addSpot(color, move.getR(), move.getC());
+
+    }
+    
+     class Move {
+         /** The value of this move. More positive, better move. */
+         private int _value = 0;
+         
+         /** The [row, col] representation of the move. Stored in non-zero indexing. */
+         private int[] rc = new int[2];
+         
+         /* A move that can be made by a player. */
+         Move(int r, int c) {
+             rc[0] = r +1;
+             rc[1] = c +1;
+
+         }
+         
+         /* A move that can be made by a player. */
+         Move(int x) {
+             _value = x;
+         }
+         
+         /** Returns the move's int VALUE. */
+         int value() {
+             return _value;
+         }
+         
+         /** Sets the VALUE of this move to n. */
+         void setValue(int n) {
+             _value = n;
+         }
+         
+         int getR() {
+             return rc[0];
+         }
+         int getC() {
+             return rc[1];
+         }
+         
+         /** Makes the move. */
+         void makeMove() {
+             getBoard().addSpot(getColor(), rc[0], rc[1]);
+         }
+         
+         @Override
+         public String toString() {
+             String s = String.format("(%d, %d) val: %d", getR(), getC(), value());
+              return s;
+         }
+        
+    }
+
 }

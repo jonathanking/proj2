@@ -8,9 +8,10 @@ public class SquareTest {
 
     @Test
     public void createSquares() {
-        Square a = new Square();
-        Square b = new Square();
-        Square c = new Square(3, Color.RED);
+        Board x = new MutableBoard(6);
+        Square a = new Square(0, 0, x);
+        Square b = new Square(0, 1 ,x);
+        Square c = new Square(3, Color.RED, 1, 0, x);
         assertTrue(a.getColor() == Color.WHITE);
         assertTrue(b.getSpots() == 0);
         b.setColor(Color.BLUE);
@@ -20,9 +21,10 @@ public class SquareTest {
     
     @Test
     public void createSquares2() {
-        Square a = new Square();
-        Square b = new Square();
-        Square c = new Square(3, Color.RED);
+        Board x = new MutableBoard(6);
+        Square a = new Square(0, 0, x);
+        Square b = new Square(0, 1 ,x);
+        Square c = new Square(3, Color.RED, 1, 0, x);
         assertTrue(a.getColor() == Color.WHITE);
         assertTrue(b.getSpots() == 0);
         b.setColor(Color.BLUE);

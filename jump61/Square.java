@@ -10,17 +10,44 @@ public class Square {
     private int _spots;
     /** The current color of a square. */
     private Color _color;
+    /** The position of the square. */
+    private int[] _position = {0, 0};
+    /** The board that the square is on. */
+    private Board _sqBoard;
+    /** Designates square as a corner, edge, or center type piece.
+     * Corner = 2, edge = 3, center = 4. */
+    private int locationType; 
 
     /** Initializes a new square that is white and has no spots. */
-    Square() {
+    Square(int r, int c) {
         setSpots(0);
         setColor(Color.WHITE);
+        _position[0] = r;
+        _position[1] = c;
+    }
+    
+    /** Initializes a new square that is white and has no spots. */
+    Square(int r, int c, Board b) {
+        setSpots(0);
+        setColor(Color.WHITE);
+        _position[0] = r;
+        _position[1] = c;
+        _sqBoard = b;
+        if (b != null) {
+            locationType = this._sqBoard.neighbors(_position[0], _position[1]);
+        }
     }
 
     /** Creates a square SPOTS spots and a COLOR. */
-    Square(int spots, Color color) {
+    Square(int spots, Color color, int r, int c, Board b) {
         setSpots(spots);
         setColor(color);
+        _position[0] = r;
+        _position[1] = c;
+        _sqBoard = b;
+        if (b != null) {
+            locationType = this._sqBoard.neighbors(_position[0], _position[1]);
+        }
     }
 
     /** Changes the color of the current square. */
@@ -32,9 +59,6 @@ public class Square {
     public void addSpot(Color player) {
         this.setColor(player);
         setSpots(getSpots() + 1);
-        // check if necessary to flip squares
-        // actually, i think the Board.jump() method will take care of this
-
     }
 
     /** Gets the number of spots on the current Square. */
@@ -60,6 +84,31 @@ public class Square {
     public void setColor(Color color) {
         this._color = color;
     }
+    
+    /** Returns a Square[] that holds the neighbors of this square. */
+    Square[] neighboringSquares() {
+        int r = _position[0];
+        int c = _position[1];
+        int pos = 0;
+        Square[] list = new Square[_sqBoard.neighbors(_position[0], _position[1])];
+        if (_sqBoard.exists(r + 2, c + 1)) {
+            list[pos] = _sqBoard.getBoard()[r+1][c];
+            pos++;
+        }
+        if (_sqBoard.exists(r, c + 1)) {
+            list[pos] = _sqBoard.getBoard()[r - 1][c];
+            pos++;
+        }
+        if (_sqBoard.exists(r + 1, c + 2)) {
+            list[pos] = _sqBoard.getBoard()[r][c + 1];
+            pos++;
+        }
+        if (_sqBoard.exists(r + 1, c)) {
+            list[pos] = _sqBoard.getBoard()[r][c - 1];
+            pos++;
+        }
+        return list;
+    }
 
     /** Returns a String for the Square. i.e. "red 2" or "blue 3". */
     public String toString() {
@@ -69,5 +118,14 @@ public class Square {
             return "" + getColor().toString().substring(0, 1) + getSpots();
         }
     }
+
+    /**
+     * Returns the value of locationType.
+     * Corner = 2, edge = 3, center = 4.
+     */
+    public int getLocationType() {
+        return locationType;
+    }
+
 
 }

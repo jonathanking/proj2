@@ -34,7 +34,7 @@ abstract class Board {
         Square[][] newBoard = new Square[N][N];
         for (int r = 0; r < N; r++) {
             for (int c = 0; c < N; c++) {
-                newBoard[r][c] = new Square();
+                newBoard[r][c] = new Square(r, c, this);
             }
         }
         return newBoard;

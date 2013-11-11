@@ -32,6 +32,12 @@ class MutableBoard extends Board {
     /** An N x N board in initial configuration. */
     MutableBoard(int N) {
         setBoard(cleanBoard(N));
+//        for (int r = 0; r < N; r++) {
+//            for (int c = 0; c < N; c++) {
+//                _board[r][c] = new Square(r, c, this);
+//            }
+//        }
+
         _N = N;
         _moves = 0;
     }
@@ -66,7 +72,7 @@ class MutableBoard extends Board {
         for (int r = 0; r < N; r++) {
             for (int c = 0; c < N; c++) {
                 Square orig = board.getBoard()[r][c];
-                Square s = new Square(orig.getSpots(), orig.getColor());
+                Square s = new Square(orig.getSpots(), orig.getColor(), r, c, this);
                 newBoard[r][c] = s;
             }
         }

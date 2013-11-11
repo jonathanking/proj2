@@ -16,8 +16,13 @@ class HumanPlayer extends Player {
 
     @Override
     void makeMove() {
+        // readExecuteCommand();
         Game game = getGame();
-        Board board = getBoard();
+        game.getMove();
+        if (game.moveHolder()[0] != 0) {
+            int[] move = game.moveHolder();
+            game.makeMove(move[0], move[1]);
+        }
         // FIXME
     }
 

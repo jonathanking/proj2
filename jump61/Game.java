@@ -39,7 +39,7 @@ class Game {
     /** Returns a readonly view of the game board.  This board remains valid
      *  throughout the session. */
     Board getBoard() {
-        return _readonlyBoard;
+        return _board;
     }
 
     /**
@@ -48,27 +48,38 @@ class Game {
      * quantity indicates an error.
      */
     int play() {
-        _out.println("Welcome to " + Defaults.VERSION);
+        _out.print("Welcome to " + Defaults.VERSION + ", ");
+        _out.println("where everything's made up and the points don't matter!");
         while (_session) {
             while (!_playing) {
                 promptForNext();
                 readExecuteCommand();
             }
-            // while (promptForNext()) {
-            // readExecuteCommand();
-            // }
-            while (getMove(_move)) {
+            while (_board.whoseMove() == RED && _playing) {
 
-                makeMove(_move[0], _move[1]);
+                _red.makeMove();
                 clearMove();
                 checkForWin();
-                System.out.println(_board);
-                // readExecuteCommand();
-                // String command = _inp.next();
-                // command += "HILFINGER";
+                if(_verbose) {
+                    _out.println(_board.toDisplayString());
+                }
+//                System.out.println(_board);
+            }
+            if (!_playing) {
+                continue;
+            }
+            while (_board.whoseMove() == BLUE && _playing) {
+                _blue.makeMove();
+                clearMove();
+                checkForWin();
+                if(_verbose) {
+                    _out.println(_board.toDisplayString());
+                }
+
+//                 System.out.println(_board);
+
             }
         }
-
         _out.flush();
         return 0;
         // FIXME
@@ -82,8 +93,25 @@ class Game {
     /** Get a move from my input and place its row and column in
      *  MOVE.  Returns true if this is successful, false if game stops
      *  or ends first. */
-    boolean getMove(int[] move) {
+    boolean getMove() {
         while (_playing && _move[0] == 0 && promptForNext()) {
+//            if (_red instanceof AI && _board.whoseMove() == RED) {
+//                Player.Move m = ((AI) _red).findBestMove(RED, getBoard(), 4, -100);
+//                int r = m.getR() - 1;
+//                int c = m.getC() - 1;
+//                _move[0] = r;
+//                _move[1] = c;
+//                return true;
+//            }
+//            if (_blue instanceof AI && _board.whoseMove() == BLUE) {
+//                Player.Move m =
+//                    ((AI) _blue).findBestMove(BLUE, getBoard(), 4, -100);
+//                int r = m.getR() - 1;
+//                int c = m.getC() - 1;
+//                _move[0] = r;
+//                _move[1] = c;
+//                return true;
+//            }
             readExecuteCommand();
         }
         if (_move[0] > 0) {
@@ -133,14 +161,13 @@ class Game {
         if(_playing && (winner != null)) {
             announceWinner();
             _playing = false;
-//            _session = false; actually, don't end the session
-            
+
         }
     }
 
     /** Send announcement of winner to my user output. */
     private void announceWinner() {
-        message("%s wins.", getBoard().getWinner().toCapitalizedString());
+        message("%s wins.\n", getBoard().getWinner().toCapitalizedString());
     }
 
     /** Make PLAYER an AI for subsequent moves. */
@@ -192,7 +219,7 @@ class Game {
      *  0, clears the square, ignoring COLOR.  SPOTS must be less than
      *  the number of neighbors of square R, C. */
     private void setSpots(int r, int c, int spots, String color) {
-        _board.getBoard()[r][c] = new Square(spots, Color.parseColor(color));
+        _board.getBoard()[r][c] = new Square(spots, Color.parseColor(color), r, c, _board);
         // FIXME
     }
 
@@ -262,10 +289,12 @@ class Game {
                 break;
             case "start":
                 _playing = true;
+                if (_board.getWinner() != null) {
+                    _board.clear(_board.size());
+                }
                 break;
             case "quit":
                 System.exit(0);
-                //FIXME
                 break;
             case "auto":
                 playFalse();
@@ -277,7 +306,12 @@ class Game {
                 break;
             case "size":
                 playFalse();
-                _board.clear(Integer.parseInt(args[0]));
+                int s = Integer.parseInt(args[0]);
+                if (s <= 1) {
+                    reportError("Error: %d is not a valid board size.", s);
+                    break;
+                }
+                _board.clear(s);
                 break;
             case "move":
                 playFalse();
@@ -303,6 +337,12 @@ class Game {
             case "seed":
                 setSeed(Long.parseLong(args[0]));
                 break;
+            case "verbose":
+                _verbose = true;
+                break;
+            case "quiet":
+                _verbose = false;
+                break;
             case "help":
                 help();
                 break;
@@ -310,7 +350,7 @@ class Game {
                 if (_playing) {
                     reportError("Syntax error in move command.");
                 } else {
-                    throw error("bad command: '%s'", cmnd);
+                    reportError("bad command: '%s'", cmnd);
                 }
             }
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -323,12 +363,32 @@ class Game {
      * token.
      */
     private boolean promptForNext() {
+//        if (_red instanceof AI && _board.whoseMove() == RED) {
+//            Player.Move m = ((AI) _red).findBestMove(RED, getBoard(), 4, -100);
+//            int r = m.getR() - 1;
+//            int c = m.getC() - 1;
+//            _move[0] = r;
+//            _move[1] = c;
+//            return false;
+//        }
+//        if (_blue instanceof AI && _board.whoseMove() == BLUE) {
+//            Player.Move m =
+//                ((AI) _blue).findBestMove(BLUE, getBoard(), 4, -100);
+//            int r = m.getR() - 1;
+//            int c = m.getC() - 1;
+//            _move[0] = r;
+//            _move[1] = c;
+//            return false;
+//        }
         String prompt = "> ";
-        if (_playing) {
-            prompt = _board.whoseMove() + "> ";
+        Color cur = _board.whoseMove();
+        if ((_playing && cur == RED && !(_red instanceof AI)) ||
+            (_playing && cur == BLUE && !(_blue instanceof AI))) {
+            prompt = cur + "> ";
         }
-//        _prompter.write(prompt);
-        System.out.print(prompt);
+        _prompter.print(prompt);
+        _prompter.flush();
+//        System.out.print(prompt);
         if (_inp.hasNext()) {
             return true;
         } else {
@@ -370,13 +430,29 @@ class Game {
 
     /** True iff a game is currently in progress. */
     private boolean _playing;
+    
+    /** If true, display the board after each move. */
+    private boolean _verbose = false;
 
     /** The player with the color RED. */
-    private Player _red;
+    private Player _red = new HumanPlayer(this, RED);
     /** The player with the color BLUE. */
-    private Player _blue;
+    private Player _blue = new HumanPlayer(this, BLUE);
 
    /** Used to return a move entered from the console.  Allocated
      *  here to avoid allocations. */
     private final int[] _move = new int[2];
+    
+    /** Returns the _MOVE holder. */
+    int[] moveHolder() {
+        return _move;
+    }
+
+    /**
+     * Returns the value of _VERBOSE. */
+    public boolean getVerbose() {
+        return _verbose;
+    }
+
+
 }

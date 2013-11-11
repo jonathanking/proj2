@@ -17,6 +17,7 @@ public class GameTest {
         Game game = new Game(new InputStreamReader(System.in),
                              output, output,
                              new OutputStreamWriter(System.err));
+        
         System.out.print(game.play());
     }
 
