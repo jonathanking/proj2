@@ -17,7 +17,7 @@ public class GameTest {
             new Game(new InputStreamReader(System.in), output, output,
                 new OutputStreamWriter(System.err));
 
-        assertEquals(game.play(), 0);
+        assertEquals(game.getBoard().size(), 6);
     }
 
 }

@@ -123,7 +123,7 @@ public class Square {
         if (getColor() == Color.WHITE && getSpots() == 0) {
             return "--";
         } else {
-            return "" + getColor().toString().substring(0, 1) + getSpots();
+            return "" + getSpots() + getColor().toString().substring(0, 1);
         }
     }
 
