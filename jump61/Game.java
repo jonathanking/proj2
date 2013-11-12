@@ -151,8 +151,16 @@ class Game {
         message("%s wins.\n", getBoard().getWinner().toCapitalizedString());
     }
 
-    /** Make PLAYER an AI for subsequent moves. */
-    private void setAuto(Color player) {
+    /** Make player P an AI for subsequent moves. */
+    private void setAuto(String p) {
+        Color player = Color.WHITE;
+        try {
+            player = Color.parseColor(p);
+        } catch (java.lang.IllegalArgumentException e) {
+            reportError(
+                "%s is not a valid color. Must be \"red\" or \"blue\".", p);
+            return;
+        }
         if (player == Color.RED) {
             _red = new AI(this, Color.RED);
         } else if (player == Color.BLUE) {
@@ -160,8 +168,17 @@ class Game {
         }
     }
 
-    /** Make PLAYER take manual input from the user for subsequent moves. */
-    private void setManual(Color player) {
+    /** Make Player P take manual input from the user for subsequent moves. */
+    private void setManual(String p) {
+        playFalse();
+        Color player = Color.WHITE;
+        try {
+            player = Color.parseColor(p);
+        } catch (java.lang.IllegalArgumentException e) {
+            reportError(
+                "%s is not a valid color. Must be \"red\" or \"blue\".", p);
+            return;
+        }
         if (player == Color.RED) {
             _red = new HumanPlayer(this, Color.RED);
         } else if (player == Color.BLUE) {
@@ -180,8 +197,15 @@ class Game {
     }
 
     /** Seed the random-number generator with SEED. */
-    private void setSeed(long seed) {
-        _random.setSeed(seed);
+    private void setSeed(String seed) {
+        long x = 0;
+        try {
+            x = Long.parseLong(seed);
+        } catch (java.lang.IllegalArgumentException e) {
+            reportError("%s is not a valid seed.", seed);
+            return;
+        }
+        _random.setSeed(x);
     }
 
     /**
@@ -226,22 +250,44 @@ class Game {
      * square, ignoring COLOR. SPOTS must be less than the number of neighbors
      * of square R, C.
      */
-    private void setSpots(int r, int c, int spots, String color) {
+    private void setSpots(String r, String c, String spots, String color) {
+        int row = 0;
+        int col = 0;
+        int x = 0;
+        try {
+            row = Integer.parseInt(r);
+            col = Integer.parseInt(c);
+            x = Integer.parseInt(spots);
+        } catch (java.lang.IllegalArgumentException e) {
+            reportError("Incorrect syntax for \"set\" command.");
+            return;
+        }
         Color p = Color.WHITE;
         if (color.equals("r")) {
             p = Color.RED;
         } else if (color.equals("b")) {
             p = Color.BLUE;
+        } else {
+            reportError(
+                "Incorrect syntax \"%s\". You must either enter 'r' or 'b'.",
+                color);
         }
         playFalse();
-        _board.set(r, c, spots, p);
+        _board.set(row, col, x, p);
     }
 
     /**
      * Stop any current game and set the board to an empty N x N board with
-     * numMoves() == 0.
+     * numMoves() == 0. Takes in string S.
      */
-    private void setSize(int n) {
+    private void setSize(String s) {
+        int n = 0;
+        try {
+            n = Integer.parseInt(s);
+        } catch (java.lang.IllegalArgumentException e) {
+            reportError("%s is not a valid size.", s);
+            return;
+        }
         playFalse();
         if (n <= 1) {
             reportError("Error: %d is not a valid board size.", n);
@@ -258,8 +304,15 @@ class Game {
         }
     }
 
-    /** Sets the number of moves to X. */
-    void setNumMoves(int x) {
+    /** Sets the number of moves to S. */
+    void setNumMoves(String s) {
+        int x = 0;
+        try {
+            x = Integer.parseInt(s);
+        } catch (java.lang.IllegalArgumentException e) {
+            reportError("%s is not a valid move number.", s);
+            return;
+        }
         playFalse();
         if (x <= 0) {
             reportError("%d must be larger than zero.", x);
@@ -292,27 +345,29 @@ class Game {
                 break;
             case "auto":
                 playFalse();
-                setAuto(Color.parseColor(args[0]));
+                setAuto(args[0]);
                 break;
             case "manual":
-                playFalse();
-                setManual(Color.parseColor(args[0]));
+                setManual(args[0]);
                 break;
             case "size":
-                setSize(Integer.parseInt(args[0]));
+                setSize(args[0]);
                 break;
             case "move":
-                setNumMoves(Integer.parseInt(args[0]));
+                setNumMoves(args[0]);
                 break;
             case "set":
-                setSpots(Integer.parseInt(args[0]), Integer.parseInt(args[1]),
-                    Integer.parseInt(args[2]), args[3]);
+                if (args.length == 4) {
+                    setSpots(args[0], args[1], args[2], args[3]);
+                } else {
+                    reportError("Incorrect # of arguments for \"set\".");
+                }
                 break;
             case "dump":
                 dump();
                 break;
             case "seed":
-                setSeed(Long.parseLong(args[0]));
+                setSeed(args[0]);
                 break;
             case "verbose":
                 _verbose = true;
