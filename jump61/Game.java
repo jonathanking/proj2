@@ -107,7 +107,7 @@ class Game {
             _board.addSpot(who, r, c);
             _board._moves++;
         } else {
-            reportError("The move to <%d, %d> is not legal.\n", r, c);
+            reportError("The move to <%d, %d> is not legal.", r, c);
         }
 
     }
@@ -258,6 +258,15 @@ class Game {
         }
     }
 
+    /** Sets the number of moves to x. */
+    void setNumMoves(int x) {
+        playFalse();
+        if (x <= 0) {
+            reportError("%d must be larger than zero.", x);
+        }
+        _board.setMoves(x);
+    }
+
     /**
      * Gather arguments ARGS and execute command CMND. Throws GameException on
      * errors.
@@ -292,8 +301,7 @@ class Game {
                 setSize(Integer.parseInt(args[0]));
                 break;
             case "move":
-                playFalse();
-                _board.setMoves(Integer.parseInt(args[0]));
+                setNumMoves(Integer.parseInt(args[0]));
                 break;
             case "set":
                 setSpots(Integer.parseInt(args[0]), Integer.parseInt(args[1]),

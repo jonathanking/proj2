@@ -83,9 +83,9 @@ abstract class Board {
      */
     Color whoseMove() {
         if (numMoves() % 2 != 0) {
-            return BLUE;
-        } else if (numMoves() % 2 == 0) {
             return RED;
+        } else if (numMoves() % 2 == 0) {
+            return BLUE;
         }
         return null;
 

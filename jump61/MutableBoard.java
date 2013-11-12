@@ -31,14 +31,14 @@ class MutableBoard extends Board {
     MutableBoard(int N) {
         setBoard(cleanBoard(N));
         _N = N;
-        _moves = 0;
+        _moves = 1;
     }
 
     /** An N x N board in initial configuration with size set to DEFAULT. */
     MutableBoard() {
         setBoard(cleanBoard(Defaults.BOARD_SIZE));
         _N = Defaults.BOARD_SIZE;
-        _moves = 0;
+        _moves = 1;
     }
 
     /**
@@ -54,7 +54,7 @@ class MutableBoard extends Board {
     void clear(int N) {
         setBoard(cleanBoard(N));
         _N = N;
-        _moves = 0;
+        _moves = 1;
     }
 
     @Override

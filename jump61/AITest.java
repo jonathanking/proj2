@@ -27,7 +27,4 @@ public class AITest {
         assertTrue(blue instanceof AI);
     }
 
-
-
-
 }
