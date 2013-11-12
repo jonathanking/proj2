@@ -258,7 +258,7 @@ class Game {
         }
     }
 
-    /** Sets the number of moves to x. */
+    /** Sets the number of moves to X. */
     void setNumMoves(int x) {
         playFalse();
         if (x <= 0) {
