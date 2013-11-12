@@ -263,6 +263,7 @@ class Game {
         playFalse();
         if (x <= 0) {
             reportError("%d must be larger than zero.", x);
+            return;
         }
         _board.setMoves(x);
     }
