@@ -153,6 +153,7 @@ class Game {
 
     /** Make player P an AI for subsequent moves. */
     private void setAuto(String p) {
+        playFalse();
         Color player = Color.WHITE;
         try {
             player = Color.parseColor(p);
@@ -272,6 +273,11 @@ class Game {
                 "Incorrect syntax \"%s\". You must either enter 'r' or 'b'.",
                 color);
         }
+
+        if (_board.neighbors(row-1, col-1) < x) {
+            reportError("The number of spots on a square must be less than"
+                + " its number of neighboring squares.");
+        }
         playFalse();
         _board.set(row, col, x, p);
     }
@@ -344,7 +350,6 @@ class Game {
                 System.exit(0);
                 break;
             case "auto":
-                playFalse();
                 setAuto(args[0]);
                 break;
             case "manual":
