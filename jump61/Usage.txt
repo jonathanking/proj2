@@ -1,1 +1,1 @@
-Replace with a Usage message, describing how to run this program
+To run this command, enter "java -ea jump61/Main" from the proj2 directory. Have fun!

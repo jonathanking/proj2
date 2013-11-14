@@ -125,9 +125,6 @@ class AI extends Player {
         int oppSquares = b.numOfColor(p.opposite());
         int val = 0;
         val = (mySquares - oppSquares) * hundred;
-        val +=
-            cornersNotOwnedByPlayer(p, b) + cornersOwnedByPlayer(p, b)
-                + highWeightSquares(p, b);
         return val;
     }
 

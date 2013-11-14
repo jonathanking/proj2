@@ -274,7 +274,7 @@ class Game {
                 color);
         }
 
-        if (_board.neighbors(row-1, col-1) < x) {
+        if (_board.neighbors(row - 1, col - 1) < x) {
             reportError("The number of spots on a square must be less than"
                 + " its number of neighboring squares.");
         }

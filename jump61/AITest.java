@@ -7,7 +7,6 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import jump61.Player.Move;
-import jump61.AI.*;
 
 import org.junit.Test;
 
