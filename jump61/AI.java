@@ -79,7 +79,7 @@ class AI extends Player {
      * Returns an ArrayList<Move> that is a list of every legal move for WHO on
      * START.
      */
-    private ArrayList<Move> getLegalMoves(Color who, Board start) {
+    ArrayList<Move> getLegalMoves(Color who, Board start) {
         int N = start.size();
         ArrayList<Move> moves = new ArrayList<Move>();
 
@@ -95,7 +95,7 @@ class AI extends Player {
     }
 
     /** Returns a guess of the best move for WHO on START with CUTOFF. */
-    private Move guessBestMove(Color who, Board start, double cutoff) {
+    Move guessBestMove(Color who, Board start, double cutoff) {
 
         Move bestSoFar;
         bestSoFar = reallyBadMove(who, start);
@@ -117,7 +117,7 @@ class AI extends Player {
     /**
      * Returns heuristic value of board B for player P. Higher is better for P.
      */
-    private int staticEval(Color p, Board b) {
+    public int staticEval(Color p, Board b) {
         if (b.getWinner() == p) {
             return _wonGame.value();
         }
@@ -202,7 +202,7 @@ class AI extends Player {
     }
 
     /** Infinity. */
-    private final int _infinity = 7777777;
+    private final int _infinity = Integer.MAX_VALUE;
 
     /** A Move with a value that represents a forced win. */
     private final Move _wonGame = new Move(_infinity);
@@ -213,7 +213,7 @@ class AI extends Player {
     /** Hundred. */
     private final int hundred = 100;
 
-    /** Returns a REALL BAD MOVE with a low value. Takes C and B. */
+    /** Returns a REALLY BAD MOVE with a low value. Takes C and B. */
     Move reallyBadMove(Color c, Board b) {
         Move m = getLegalMoves(c, b).get(0);
         m.setValue(-hundred);

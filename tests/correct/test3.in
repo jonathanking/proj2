@@ -1,0 +1,12 @@
+# A test to play a small game with both sides automated and come up with a winner.
+staff-jump61
+None
+===#1===
+auto Red
+auto Blue
+size 2
+start
+%rb
+%e
+===#2===
+
