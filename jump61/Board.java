@@ -218,7 +218,7 @@ abstract class Board {
             }
             out = out.substring(0, out.length() - 1) + "\n";
         }
-        out += "===\n";
+        out += "===";
         return out;
     }
 

@@ -18,6 +18,13 @@ public class GameTest {
                 new OutputStreamWriter(System.err));
 
         assertEquals(game.getBoard().size(), 6);
+        game.setNumMoves("6");
+        assertTrue(game.getBoard().numMoves() == 6);
+        game.makeMove(1, 1);
+        assertTrue(game.getBoard().getBoard()[0][0].getSpots() == 1);
+        assertTrue(game.getBoard().getWinner() == null);
+        game.makeMove(1, 1);
+        assertTrue(game.getBoard().getBoard()[0][0].getSpots() == 1);
     }
 
 }

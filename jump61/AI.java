@@ -96,7 +96,6 @@ class AI extends Player {
 
     /** Returns a guess of the best move for WHO on START with CUTOFF. */
     Move guessBestMove(Color who, Board start, double cutoff) {
-
         Move bestSoFar;
         bestSoFar = reallyBadMove(who, start);
         for (Move M : getLegalMoves(who, start)) {
@@ -125,7 +124,7 @@ class AI extends Player {
         int mySquares = b.numOfColor(p);
         int oppSquares = b.numOfColor(p.opposite());
         int val = 0;
-        val = mySquares - oppSquares;
+        val = (mySquares - oppSquares) * hundred;
         val +=
             cornersNotOwnedByPlayer(p, b) + cornersOwnedByPlayer(p, b)
                 + highWeightSquares(p, b);
