@@ -47,6 +47,10 @@ class AI extends Player {
      * position START, and looking up to DEPTH moves ahead.
      */
     public Move findBestMove(Color who, Board start, int depth, double cutoff) {
+        Board empty = new MutableBoard(start.size());
+        if (start.getBoard() == empty.getBoard()) {
+            return new Move(0, 0);
+        }
 
         if (start.getWinner() == who) {
             return _wonGame;
@@ -125,7 +129,7 @@ class AI extends Player {
         int oppSquares = b.numOfColor(p.opposite());
         int val = 0;
         val = (mySquares - oppSquares) * hundred;
-        val += highWeightSquares(p, b);
+        val += highWeightSquares(p, b) + cornersOwnedByPlayer(p, b) * 10;
         return val;
     }
 
@@ -151,7 +155,7 @@ class AI extends Player {
                             x += 8;
                         } else if ((s.getLocationType() == 4
                             && s.getSpots() == 4)) {
-                            x += 10;
+                            x += 10 * 3;
                         }
                     }
                 }

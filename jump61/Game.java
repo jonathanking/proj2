@@ -55,11 +55,13 @@ class Game {
         _out.println("where everything's made up and the points don't matter!");
         while (_session) {
             while (!_playing) {
-                promptForNext();
-                readExecuteCommand();
+                if (promptForNext()) {
+                    readExecuteCommand();
+                } else {
+                    System.exit(0);
+                }
             }
             while (_board.whoseMove() == RED && _playing) {
-
                 _red.makeMove();
                 clearMove();
                 checkForWin();
