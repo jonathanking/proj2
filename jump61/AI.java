@@ -123,6 +123,8 @@ class AI extends Player {
     public int staticEval(Color p, Board b) {
         if (b.getWinner() == p) {
             return _wonGame.value();
+        } else if (b.getWinner() == p.opposite()) {
+            return _lostGame.value();
         }
         int size = b.size();
         int mySquares = b.numOfColor(p);

@@ -23,6 +23,10 @@ public class Main {
      * the arguments are wrong.
      */
     public static void main(String[] args0) {
+        if (args0.length >= 1 && !args0[0].equals("--display")) {
+            usage();
+            System.exit(0);
+        }
         Writer output = new OutputStreamWriter(System.out);
         Game game =
             new Game(new InputStreamReader(System.in), output, output,

@@ -1,0 +1,16 @@
+# A test to play a two games each with one side automated and come up with a winner.
+staff-jump61
+staff-jump61
+===#1===
+auto Red
+manual blue
+start
+%mr
+%ib...
+%e
+===#2===
+auto Blue
+manual Red
+start
+%ir...
+%e
